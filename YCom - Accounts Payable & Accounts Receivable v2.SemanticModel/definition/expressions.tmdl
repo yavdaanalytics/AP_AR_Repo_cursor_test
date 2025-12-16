@@ -1,0 +1,27 @@
+expression MainPath = "https://yavdain.sharepoint.com/sites/Operations-1-YavdaYcom/" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: 9f661c40-f28c-424a-8043-c8393d56709a
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression 'Subfolder Path where files are present_FINANCE' = "https://yavdain.sharepoint.com/sites/Operations-1-YavdaYcom/Shared Documents/Yavda Ycom/YCOM_FINANCE_DATA/AP_and_AR/" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: c4daf1b5-3a71-4727-8f5a-de5997c16735
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression FINANCE_SharePoint_Data_Extract =
+		let
+		    Source = List.Accumulate( List.RemoveItems(Text.Split(Text.AfterDelimiter(#"Subfolder Path where files are present_FINANCE", "Shared Documents/"), "/"),{""}),SharePoint.Contents(MainPath, [ApiVersion = 15]){[Name="Shared Documents"]}[Content],(state,current) => state{[Name=current]}[Content]),
+		    #"AP_AR_Dataset xlsx" = Source{[Name="AP_AR_Dataset.xlsx"]}[Content],
+		    #"Imported Excel Workbook" = Excel.Workbook(#"AP_AR_Dataset xlsx")
+		in
+		    #"Imported Excel Workbook"
+	lineageTag: a8166197-d1ed-49c7-a607-7fd644f29e37
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

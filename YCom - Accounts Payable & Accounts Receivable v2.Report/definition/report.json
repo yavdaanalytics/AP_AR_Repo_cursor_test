@@ -1,0 +1,142 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.0.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": {
+        "visual": "1.8.95",
+        "report": "2.0.95",
+        "page": "1.3.95"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "CY23SU027470843311975325.json",
+      "reportVersionAtImport": {
+        "visual": "2.1.0",
+        "report": "2.1.0",
+        "page": "2.0.0"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publicCustomVisuals": [
+    "bubblechartbordersonlyE8051B51DB625145BB3F92C5FB7868BC",
+    "dualxaxiscombo144EA2D4DEFA15C2A907B86DDE86E45D",
+    "dualyaxiscombo12906DF13887C2CC660838C5ABDCC630",
+    "histogram7D0E580F1FEB4DDA901A6D8146EA6387",
+    "horizontalbullechartAD848DB2E71C1BBC88C027512FD82044",
+    "mergedbarchart98372E5F75024E3992B6A6310936AF2A",
+    "verticalbulletchartD04B6B542D02418C8D14A17761414336",
+    "sankey35CACFA54D5C45EF9289D949AC2295C9"
+  ],
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY24SU10",
+          "path": "BaseThemes/CY24SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "multiplebarsandtarget6056D21122475DB38248A31EECEB7885",
+      "type": "CustomVisual",
+      "items": [
+        {
+          "name": "multiplebarsandtarget6056D21122475DB38248A31EECEB7885.pbiviz.json",
+          "path": "multiplebarsandtarget6056D21122475DB38248A31EECEB7885.pbiviz.json",
+          "type": "CustomVisualMetadata"
+        }
+      ]
+    },
+    {
+      "name": "dualyaxiscombotarget1B5BF5D7DC78239DB29241C66D5346A7",
+      "type": "CustomVisual",
+      "items": [
+        {
+          "name": "dualyaxiscombotarget1B5BF5D7DC78239DB29241C66D5346A7.pbiviz.json",
+          "path": "dualyaxiscombotarget1B5BF5D7DC78239DB29241C66D5346A7.pbiviz.json",
+          "type": "CustomVisualMetadata"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "CY23SU027470843311975325.json",
+          "path": "CY23SU027470843311975325.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "Untitled_design__11_-removebg-7734348933518048.png",
+          "path": "Untitled_design__11_-removebg-7734348933518048.png",
+          "type": "Image"
+        },
+        {
+          "name": "test6227130220833246.png",
+          "path": "test6227130220833246.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultFilterActionIsDataFilter": true,
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true,
+    "customMemoryLimit": "1048576",
+    "customTimeoutLimit": "225"
+  },
+  "slowDataSourceSettings": {
+    "isCrossHighlightingDisabled": false,
+    "isSlicerSelectionsButtonEnabled": false,
+    "isFilterSelectionsButtonEnabled": false,
+    "isFieldWellButtonEnabled": false,
+    "isApplyAllButtonEnabled": false
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "version": "5.5.1.0",
+  "author": {
+    "name": "https://pbivizedit.com",
+    "email": "support@pbivizedit.com"
+  },
+  "resources": [
+    {
+      "resourceId": "rId0",
+      "sourceType": 5,
+      "file": "resources/dualyaxiscombotarget1B5BF5D7DC78239DB29241C66D5346A7.pbiviz.json"
+    }
+  ],
+  "visual": {
+    "guid": "dualyaxiscombotarget1B5BF5D7DC78239DB29241C66D5346A7",
+    "name": "dualyaxiscombotarget",
+    "displayName": "Dual Y-Axis Combo Chart",
+    "version": "5.5.1.0",
+    "description": "A combo chart with Bars, Lines, Scatter and Areas on primary and secondary axis",
+    "supportUrl": "https://pbivizedit.com/contact",
+    "gitHubUrl": "",
+    "visualClassName": "Visual"
+  },
+  "metadata": {
+    "pbivizjson": {
+      "resourceId": "rId0"
+    }
+  }
+}

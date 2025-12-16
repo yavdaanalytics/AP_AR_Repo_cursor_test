@@ -1,0 +1,51 @@
+relationship 99186bf8-555d-4939-bb84-d4ba838d48c6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date_Table.Date
+	toColumn: LocalDateTable_0518d032-6c0f-4ec1-a59b-4932581cf04e.Date
+
+relationship c8a8f813-c1e9-45c3-bd2f-02f26a5fd5b6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date_Table.'End of Week'
+	toColumn: LocalDateTable_410a1e30-921a-45db-aefd-0c33a068d4bb.Date
+
+relationship f0f9e433-abe3-40ce-9067-217538b8763f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: AP_Data.'Due Date'
+	toColumn: LocalDateTable_f176b515-df8b-46be-9ff1-0f955cc2378c.Date
+
+relationship dd91f947-4584-4d1a-8053-2d6d60768167
+	joinOnDateBehavior: datePartOnly
+	fromColumn: AP_Data.'Payment Date'
+	toColumn: LocalDateTable_494e163d-fe05-48cc-8af5-4d7b415ed3a2.Date
+
+relationship 15b27ff2-9e8a-413b-8669-01c5cc3bedd1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: AR_Data.'Due Date'
+	toColumn: LocalDateTable_8cd00490-7735-494d-a78c-b86db1473406.Date
+
+relationship 4450ad20-1bf7-862d-3d47-6e58db855d33
+	fromColumn: AP_Data.'Bill Date'
+	toColumn: Date_Table.Date
+
+relationship d8bc3b53-fade-c1d2-51f1-20e9d17c05f5
+	fromColumn: AP_Data.AgingBucket
+	toColumn: Age_Sorting.AgeBucket
+
+relationship 453eba4f-b95a-0f94-7758-b33e4aa29e7d
+	fromColumn: AR_Data.AgingBucket
+	toColumn: Age_Sorting.AgeBucket
+
+relationship ddf1d9fc-0584-4ca9-ae22-45015e215ce9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: AR_Data.'Received Date'
+	toColumn: LocalDateTable_57460cf4-12ef-43af-8ad3-d29de355e1e2.Date
+
+relationship 48832798-ac80-5486-5ca6-8f239befa2a5
+	fromColumn: AR_Data.'Invoice Date'
+	toColumn: Date_Table.Date
+
+relationship d5e04dbf-f374-47b7-ad83-845ef9b54797
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date_Table.'End of month'
+	toColumn: LocalDateTable_db3c47c3-450e-44d6-9aec-6f136735068e.Date
+

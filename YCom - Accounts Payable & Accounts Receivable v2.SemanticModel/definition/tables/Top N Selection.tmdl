@@ -1,0 +1,22 @@
+table 'Top N Selection'
+	lineageTag: a7613888-79e1-4882-9311-d1bc448d4772
+
+	measure 'Top N Selection Value' = SELECTEDVALUE('Top N Selection'[Value], 100)
+		formatString: 0
+		lineageTag: d4d4fb2f-09b0-4c05-9f2a-cb2b1531bc15
+
+	column Value
+		formatString: 0
+		lineageTag: dd2f3927-54da-4540-9ec7-5bb7156add58
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Top N Selection' = calculated
+		mode: import
+		source = GENERATESERIES(1, 100, 1)
+
+	annotation PBI_Id = 50c12b0abd784aed9df36467d7e6fe68
+

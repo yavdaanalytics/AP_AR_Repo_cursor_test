@@ -1,0 +1,198 @@
+table AP_Data
+	lineageTag: fdf14bf2-0849-41ec-86db-225f664a31a3
+
+	measure 'Total Payables' = ```
+			
+			SUM(AP_Data[Bill Amount]) - SUM(AP_Data[Amount Paid])
+			
+			```
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 8530b7b9-27f7-4bb4-921f-8f1a53457a8b
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Net Working Capital' = ```
+			
+			[Total Receivables] - [Total Payables]
+			
+			```
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 20251278-576e-4c13-a7a5-72faa6cfb877
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure '% Overdue Payables' = ```
+			
+			DIVIDE( 
+			SUMX(FILTER(AP_Data, AP_Data[Due Date] < TODAY()), AP_Data[Bill Amount] - AP_Data[Amount Paid]), 
+			[Total Payables] 
+			) 
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 9e904ddb-e18e-47af-b1ba-dce26c9865ec
+
+	measure DPO = ```
+			AVERAGEX(AP_Data, DATEDIFF(AP_Data[Bill Date], AP_Data[Payment Date], DAY)) 
+			```
+		lineageTag: 07787f67-adc0-466a-8c08-db997d40967c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure BillAmount = SUM(AP_Data[Bill Amount])
+		formatString: 0
+		lineageTag: a57a8e9b-9136-43af-8b92-7e77f2bb74a4
+
+	measure 'Unpaid Amount' = ```
+			
+			SUM(AP_Data[Bill Amount]) - SUM(AP_Data[Amount Paid])
+			
+			```
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 068fb086-7d14-4a01-8024-7f74cbecba09
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure TopVendors_AP = ```
+			
+			VAR RANKVISIBLE = 
+			    RANKX(
+			        ALL(AP_Data[Vendor Name]),
+			        [Unpaid Amount],
+			        ,
+			        DESC
+			    )
+			RETURN
+			IF(
+			    RANKVISIBLE <= SELECTEDVALUE('Top N Selection_AP'[Value]),
+			    [Unpaid Amount]
+			)
+			```
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: abd6ba3c-342e-4556-ba4b-89c27d8e61d3
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'Vendor Name'
+		dataType: string
+		lineageTag: 6c095df3-afd0-4240-abb5-2cdbde8cee0a
+		summarizeBy: none
+		sourceColumn: Vendor Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Bill Number'
+		dataType: string
+		lineageTag: 6ef6296b-d149-4c7f-a12f-4f18e4291c8e
+		summarizeBy: none
+		sourceColumn: Bill Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Bill Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 07b57463-d7ba-4e5c-8346-f7313faa2779
+		summarizeBy: none
+		sourceColumn: Bill Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Due Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c1df5d20-9dde-4569-8908-7a45d8c423a3
+		summarizeBy: none
+		sourceColumn: Due Date
+
+		variation Variation
+			isDefault
+			relationship: f0f9e433-abe3-40ce-9067-217538b8763f
+			defaultHierarchy: LocalDateTable_f176b515-df8b-46be-9ff1-0f955cc2378c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Bill Amount'
+		dataType: int64
+		formatString: 0
+		lineageTag: ae1cef76-0955-49a5-a86a-c8f7d7a57c88
+		summarizeBy: sum
+		sourceColumn: Bill Amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Amount Paid'
+		dataType: int64
+		formatString: 0
+		lineageTag: 54f9a7c4-d1b5-4444-959c-a644c81dd06c
+		summarizeBy: sum
+		sourceColumn: Amount Paid
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Payment Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c68f609c-b268-42ef-ae28-35186d21b878
+		summarizeBy: none
+		sourceColumn: Payment Date
+
+		variation Variation
+			isDefault
+			relationship: dd91f947-4584-4d1a-8053-2d6d60768167
+			defaultHierarchy: LocalDateTable_494e163d-fe05-48cc-8af5-4d7b415ed3a2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Days Overdue' = ```
+			
+			IF ( 
+			[Amount Paid] >= [Bill Amount], 
+			
+			DATEDIFF([Due Date], TODAY(), DAY) 
+			) 
+			```
+		formatString: 0
+		lineageTag: a5119e6e-f96a-44d4-8c7b-052c55dc73e1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column AgingBucket = ```
+			
+			SWITCH( 
+			TRUE(), 
+			AP_Data[Days Overdue] <= 30, "0–30", 
+			AP_Data[Days Overdue] <= 60, "31–60", 
+			AP_Data[Days Overdue] <= 90, "61–90", 
+			AP_Data[Days Overdue] > 90, ">90" 
+			) 
+			```
+		lineageTag: c9a1e054-fd1d-4c9d-8125-e00fefa94216
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition AP_Data = m
+		mode: import
+		source =
+				let
+				    Source = List.Accumulate( List.RemoveItems(Text.Split(Text.AfterDelimiter(#"Subfolder Path where files are present_FINANCE", "Shared Documents/"), "/"),{""}),SharePoint.Contents(MainPath, [ApiVersion = 15]){[Name="Shared Documents"]}[Content],(state,current) => state{[Name=current]}[Content]),
+				    #"AP_AR_Dataset xlsx" = Source{[Name="AP_AR_Dataset.xlsx"]}[Content],
+				    #"Imported Excel Workbook" = Excel.Workbook(#"AP_AR_Dataset xlsx"),
+				    #"Accounts Payable_Sheet" = #"Imported Excel Workbook"{[Item="Accounts Payable",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Accounts Payable_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Vendor Name", type text}, {"Bill Number", type text}, {"Bill Date", type datetime}, {"Due Date", type datetime}, {"Bill Amount", Int64.Type}, {"Amount Paid", Int64.Type}, {"Payment Date", type datetime}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Changed Type",{{"Bill Date", type date}, {"Due Date", type date}, {"Payment Date", type date}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

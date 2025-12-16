@@ -1,0 +1,207 @@
+table AR_Data
+	lineageTag: fe4922d4-0876-4a0d-a945-35e60c545a02
+
+	measure 'Total Receivables' = ```
+			
+			SUM(AR_Data[Invoice Amount]) - SUM(AR_Data[Amount Received])
+			
+			```
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 37fdb9cb-a1ec-4328-838e-23c01db3c940
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure DSO = AVERAGEX(AR_Data, DATEDIFF(AR_Data[Invoice Date], AR_Data[Received Date], DAY))
+		lineageTag: 1182b417-ad28-422c-a8a3-aa7fb6699ff5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Overdue Receivables' = ```
+			
+			DIVIDE( 
+			    SUMX(
+			        FILTER(AR_Data, AR_Data[Due Date] < TODAY()), 
+			        AR_Data[Invoice Amount] - AR_Data[Amount Received]
+			    ), 
+			    [Total Receivables]
+			)
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: d4025216-efbf-4dec-8368-dad98eb50a8d
+
+	measure Inv_Amount = SUM(AR_Data[Invoice Amount])
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: b89e89c5-a95f-4be1-9f3f-70a90c4e3d06
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Collection Efficiency (%)' = ```
+			
+			DIVIDE(SUM(AR_Data[Amount Received]), SUM(AR_Data[Invoice Amount])) 
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: dfe3472f-8fe1-4e53-b570-4915e100fafe
+
+	measure TopCustomers = ```
+			
+			VAR RANKVISIBLE = 
+			    RANKX(
+			        ALL(AR_Data[Customer Name]),
+			        [Total Receivables],
+			        ,
+			        DESC
+			    )
+			RETURN
+			IF(
+			    RANKVISIBLE <= SELECTEDVALUE('Top N Selection'[Value]),
+			    [Total Receivables]
+			)
+			```
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: d8e098b3-a67c-4676-a049-b0128863a215
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column 'Customer Name'
+		dataType: string
+		lineageTag: 00d4b3af-c420-4de5-b15c-d50e404cb90a
+		summarizeBy: none
+		sourceColumn: Customer Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Invoice Number'
+		dataType: string
+		lineageTag: 1bc9fa95-c242-4401-87b4-6f8fa2b8e11c
+		summarizeBy: none
+		sourceColumn: Invoice Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Invoice Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: de472a10-f7ec-447a-9364-1c288ec24774
+		summarizeBy: none
+		sourceColumn: Invoice Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Due Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 283c0a62-04bb-4ec9-9b03-5614cdce5df8
+		summarizeBy: none
+		sourceColumn: Due Date
+
+		variation Variation
+			isDefault
+			relationship: 15b27ff2-9e8a-413b-8669-01c5cc3bedd1
+			defaultHierarchy: LocalDateTable_8cd00490-7735-494d-a78c-b86db1473406.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Invoice Amount'
+		dataType: int64
+		formatString: 0
+		lineageTag: 63ee4923-fef1-4939-baa7-69450eed1edf
+		summarizeBy: sum
+		sourceColumn: Invoice Amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Amount Received'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0fcd9355-5b84-4782-af73-3b533442d222
+		summarizeBy: sum
+		sourceColumn: Amount Received
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Received Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7c6ed4a9-1d11-46aa-a711-5f28bf306580
+		summarizeBy: none
+		sourceColumn: Received Date
+
+		variation Variation
+			isDefault
+			relationship: ddf1d9fc-0584-4ca9-ae22-45015e215ce9
+			defaultHierarchy: LocalDateTable_57460cf4-12ef-43af-8ad3-d29de355e1e2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AgingBucket = ```
+			
+			SWITCH( 
+			TRUE(), 
+			AR_Data[Days Overdue] <= 30, "0–30", 
+			AR_Data[Days Overdue] <= 60, "31–60", 
+			AR_Data[Days Overdue] <= 90, "61–90", 
+			AR_Data[Days Overdue] > 90, ">90" 
+			) 
+			```
+		lineageTag: ba0caee3-e30f-48ca-82bd-3e2931344c14
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Days Overdue' = ```
+			
+			IF ( 
+			    [Amount Received] >= [Invoice Amount], 
+			    0,  -- fully paid, not overdue 
+			    DATEDIFF([Due Date], TODAY(), DAY) 
+			)
+			
+			```
+		formatString: 0
+		lineageTag: e8e14f33-8ebe-4b5d-b20f-64222a3996ff
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column AgingBucketSortOrder = ```
+			
+			SWITCH( 
+			    TRUE(),
+			    AR_Data[Days Overdue] <= 30, 1, 
+			    AR_Data[Days Overdue] <= 60, 2, 
+			    AR_Data[Days Overdue] <= 90, 3, 
+			    AR_Data[Days Overdue] > 90, 4,
+			    BLANK() // Optional: Handle cases where Days Overdue might be null or outside your ranges
+			)
+			```
+		formatString: 0
+		lineageTag: 9d891f53-a79f-4855-bd80-6df77534d3ad
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition AR_Data = m
+		mode: import
+		source =
+				let
+				    Source = List.Accumulate( List.RemoveItems(Text.Split(Text.AfterDelimiter(#"Subfolder Path where files are present_FINANCE", "Shared Documents/"), "/"),{""}),SharePoint.Contents(MainPath, [ApiVersion = 15]){[Name="Shared Documents"]}[Content],(state,current) => state{[Name=current]}[Content]),
+				    #"AP_AR_Dataset xlsx" = Source{[Name="AP_AR_Dataset.xlsx"]}[Content],
+				    #"Imported Excel Workbook" = Excel.Workbook(#"AP_AR_Dataset xlsx"),
+				    #"Accounts Receivable_Sheet" = #"Imported Excel Workbook"{[Item="Accounts Receivable",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Accounts Receivable_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Customer Name", type text}, {"Invoice Number", type text}, {"Invoice Date", type datetime}, {"Due Date", type datetime}, {"Invoice Amount", Int64.Type}, {"Amount Received", Int64.Type}, {"Received Date", type datetime}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Changed Type",{{"Invoice Date", type date}, {"Due Date", type date}, {"Received Date", type date}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

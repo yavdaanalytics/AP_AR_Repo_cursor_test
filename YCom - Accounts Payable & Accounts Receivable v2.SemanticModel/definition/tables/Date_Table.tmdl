@@ -1,0 +1,124 @@
+table Date_Table
+	lineageTag: 197c456d-f772-4e69-bda1-a5c5e4513c33
+
+	column year = YEAR('Date_Table'[Date])
+		formatString: 0
+		lineageTag: 9f31acb0-64d5-4a91-b2db-e4aa8a42cc57
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column month = FORMAT('Date_Table'[Date],"Mmm")
+		dataType: string
+		lineageTag: e76dc513-c2db-4b03-8f53-68df7d2f31f7
+		summarizeBy: none
+		sortByColumn: 'Month No'
+
+		changedProperty = SortByColumn
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month No' = MONTH('Date_Table'[Date])
+		formatString: 0
+		lineageTag: 435314e8-55e0-4727-b311-d3fdb9975dea
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fec03576-36fc-48b1-85b1-9f28d981c9e3
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 99186bf8-555d-4939-bb84-d4ba838d48c6
+			defaultHierarchy: LocalDateTable_0518d032-6c0f-4ec1-a59b-4932581cf04e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Month & Year' = Date_Table[month] & "-" & Date_Table[year]
+		lineageTag: 3d49d2f7-7fc7-4d0f-bc5f-12ab9b14f2f2
+		summarizeBy: none
+		sortByColumn: 'Month No'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Flag =
+			
+			VAR _Year = YEAR(TODAY())
+			RETURN
+			IF(YEAR(Date_Table[Date])=_Year,1,0)
+		formatString: 0
+		lineageTag: 7c05d1df-c3ff-4137-a645-db3066e199e2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'End of Week'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a53907e4-95dc-4bcf-8af6-06973ae3f1e4
+		summarizeBy: none
+		sourceColumn: End of Week
+
+		variation Variation
+			isDefault
+			relationship: c8a8f813-c1e9-45c3-bd2f-02f26a5fd5b6
+			defaultHierarchy: LocalDateTable_410a1e30-921a-45db-aefd-0c33a068d4bb.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'End of month' = EOMONTH(Date_Table[Date],0)
+		formatString: General Date
+		lineageTag: 7e58df90-8397-45f3-9422-8541877112a9
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: d5e04dbf-f374-47b7-ad83-845ef9b54797
+			defaultHierarchy: LocalDateTable_db3c47c3-450e-44d6-9aec-6f136735068e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date_Table = m
+		mode: import
+		source =
+				let
+				    // Define the start date
+				    StartDate = #date(2024, 4, 1),
+				
+				    // Get today's date
+				    Today = Date.From(DateTime.FixedLocalNow()),
+				
+				    // Calculate the end date as the last day of the month 3 months from now
+				    EndDate = Date.EndOfMonth(Date.AddMonths(Today, 3)),
+				
+				    // Generate list of first days of each month from StartDate to EndDate
+				    MonthStartList = List.Dates(
+				        StartDate,
+				        Duration.Days(EndDate - StartDate) + 1,
+				        #duration(1, 0, 0, 0)
+				    ),
+				
+				    // Convert to table
+				    DateTable = Table.FromList(MonthStartList, Splitter.SplitByNothing(), {"Date"}),
+				    #"Changed Type" = Table.TransformColumnTypes(DateTable,{{"Date", type date}}),
+				    #"Inserted End of Week" = Table.AddColumn(#"Changed Type", "End of Week", each Date.EndOfWeek([Date]), type date)
+				in
+				    #"Inserted End of Week"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

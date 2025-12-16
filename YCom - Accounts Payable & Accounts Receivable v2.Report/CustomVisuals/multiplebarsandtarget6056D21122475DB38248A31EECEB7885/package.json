@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0.0",
+  "author": {
+    "name": "https://pbivizedit.com",
+    "email": "support@pbivizedit.com"
+  },
+  "resources": [
+    {
+      "resourceId": "rId0",
+      "sourceType": 5,
+      "file": "resources/multiplebarsandtarget6056D21122475DB38248A31EECEB7885.pbiviz.json"
+    }
+  ],
+  "visual": {
+    "guid": "multiplebarsandtarget6056D21122475DB38248A31EECEB7885",
+    "name": "multiplebarsandtarget",
+    "displayName": "Multiple Bars And Target",
+    "version": "1.0.0.0",
+    "description": "Multiple Bars And Target",
+    "supportUrl": "https://pbivizedit.com/contact",
+    "gitHubUrl": "",
+    "visualClassName": "Visual"
+  },
+  "metadata": {
+    "pbivizjson": {
+      "resourceId": "rId0"
+    }
+  }
+}

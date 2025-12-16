@@ -1,0 +1,33 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-IN
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Date_Table","MainPath","FINANCE_SharePoint_Data_Extract","Subfolder Path where files are present_FINANCE","AP_Data","AR_Data","Age_Sorting"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["CalcGroup","DevMode"]
+
+ref table DateTableTemplate_f5f75ae9-2360-4061-98da-140a86c71da6
+ref table Date_Table
+ref table LocalDateTable_0518d032-6c0f-4ec1-a59b-4932581cf04e
+ref table LocalDateTable_410a1e30-921a-45db-aefd-0c33a068d4bb
+ref table AP_Data
+ref table LocalDateTable_f176b515-df8b-46be-9ff1-0f955cc2378c
+ref table LocalDateTable_494e163d-fe05-48cc-8af5-4d7b415ed3a2
+ref table AR_Data
+ref table LocalDateTable_8cd00490-7735-494d-a78c-b86db1473406
+ref table 'Ranking Option'
+ref table 'Top N Selection'
+ref table 'Top N Selection_AP'
+ref table Age_Sorting
+ref table LocalDateTable_57460cf4-12ef-43af-8ad3-d29de355e1e2
+ref table LocalDateTable_db3c47c3-450e-44d6-9aec-6f136735068e
+
+ref cultureInfo en-IN
+
